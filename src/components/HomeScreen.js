@@ -18,8 +18,8 @@ const HomeScreen = () => {
 
   const [dropoffLocation, setDropoffLocation] = useState(null);
   const [pickupLocation, setPickupLocation] = useState(null);
-  const [currentLongitude, setCurrentLongitude] = useState('...');
-  const [currentLatitude, setCurrentLatitude] = useState('...');
+  const [currentLongitude, setCurrentLongitude] = useState(null);
+  const [currentLatitude, setCurrentLatitude] = useState(null);
   const [locationStatus, setLocationStatus] = useState('');
   const {height, width} = Dimensions.get('window');
   const ASPECT_RATIO = width / height;
@@ -55,6 +55,7 @@ const HomeScreen = () => {
       }
     };
     requestLocationPermission();
+    getCurrentPosition();
   }, []);
 
   const getCurrentPosition = () => {
@@ -63,9 +64,9 @@ const HomeScreen = () => {
       //Will give you the current location
       position => {
         setLocationStatus('You are Here');
-
-        const currentLongitude = JSON.stringify(position.coords.longitude);
-        const currentLatitude = JSON.stringify(position.coords.latitude);
+        console.log('SARA :', position);
+        const currentLongitude = position.coords.longitude;
+        const currentLatitude = position.coords.latitude;
 
         setCurrentLongitude(currentLongitude);
         setCurrentLatitude(currentLatitude);
@@ -93,21 +94,21 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      {/* <MapView
+      <MapView
         provider={PROVIDER_GOOGLE}
-        // initialRegion={{
-        //   latitude: currentLatitude,
-        //   longitude: currentLongitude,
-        //   latitudeDelta: 0.02,
-        //   longitudeDelta: 0.02 * ASPECT_RATIO,
-        // }}
-      >
+        style={styles.map}
+        initialRegion={{
+          latitude: 37.4220936,
+          longitude: -122.083922,
+          latitudeDelta: 0.015,
+          longitudeDelta: 0.0121,
+        }}>
         <Marker
           coordinate={{
-            latitude: currentLatitude,
-            longitude: currentLongitude,
+            latitude: 37.4220936,
+            longitude: -122.083922,
           }}></Marker>
-      </MapView> */}
+      </MapView>
 
       <View
         style={{
@@ -116,6 +117,8 @@ const HomeScreen = () => {
           padding: 16,
           backgroundColor: 'white',
           marginTop: 10,
+          zIndex: 1,
+          position: 'absolute',
         }}>
         <TextInput
           ref={pickupInputRef}
@@ -169,11 +172,10 @@ const styles = StyleSheet.create({
     color: 'red',
     marginVertical: 16,
   },
+  map: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
 });
 
-const mapStateToProps = state => {
-  const {friends} = state;
-  return {friends};
-};
-
-export default connect(mapStateToProps)(HomeScreen);
+export default HomeScreen;
