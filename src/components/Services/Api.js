@@ -1,21 +1,16 @@
 import axios from 'axios';
-
+import {apiKey} from './config';
 // our "constructor"
 const create = () => {
   //Google API
-  const config = {
-    method: 'get',
-    url: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDt4J_mhbgHvgyjyIa4HUVo-c6xG6VFw1U&libraries=places&callback=initMap',
-    headers: {},
+  const getLocationFromGoogle = (lat, long) => {
+    return axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${apiKey}`,
+    );
   };
-
-  axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+  return {
+    getLocationFromGoogle,
+  };
 };
 
 // let's return back our create method as the default.
