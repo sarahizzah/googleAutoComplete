@@ -7,7 +7,9 @@ import {
   SafeAreaView,
   Dimensions,
   TextInput,
+  TouchableOpacity,
 } from 'react-native';
+import styles from '../../StylesScreen/LocationStyle';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import LocationCoord from '../../Fixtures/Geofences.json';
@@ -88,7 +90,7 @@ const LocationScreen = () => {
 
   const onPress = (data, details) => {
     setRegion(details.geometry.location);
-    setMarker(details.geometry.location);
+    setMarkerCoords(details.geometry.location);
   };
 
   return (
@@ -107,22 +109,10 @@ const LocationScreen = () => {
         />
       </MapView>
 
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: 'white',
-          marginTop: 10,
-          zIndex: 1,
-          position: 'absolute',
-        }}>
+      <View style={styles.searchPlace}>
         <GooglePlacesAutocomplete
           ref={placesRef}
           placeholder={'Enter Location Here'}
-          // onPress={(data, details = null) => {
-          //   // 'details' is provided when fetchDetails = true
-          //   console.log(data, details);
-          // }}
           onPress={onPress}
           query={{
             key: apiKey,
@@ -140,43 +130,21 @@ const LocationScreen = () => {
               <Text>No results were found</Text>
             </View>
           )}
-          currentLocation={true}
-          currentLocationLabel="Your location!"
+          renderRightButton={() =>
+            placesRef.current?.getAddressText() ? (
+              <TouchableOpacity
+                style={styles.clearButton}
+                onPress={() => {
+                  placesRef.current?.setAddressText('');
+                }}>
+                <Text>CLEAR</Text>
+              </TouchableOpacity>
+            ) : null
+          }
         />
       </View>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  boldText: {
-    fontSize: 25,
-    color: 'red',
-    marginVertical: 16,
-  },
-  map: {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    position: 'absolute',
-  },
-  SectionStyle: {
-    flexDirection: 'row',
-    width: '85%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    height: 50,
-    borderRadius: 5,
-  },
-});
 
 export default LocationScreen;
