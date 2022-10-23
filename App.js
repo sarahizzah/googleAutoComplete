@@ -6,7 +6,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import friendsReducer from './src/components/main';
 import LocationScreen from './src/components/Containers/Screens/LocationScreen';
-import Trending from './src/components/Containers/Screens/Trending';
 
 const store = createStore(friendsReducer);
 const Stack = createStackNavigator();
@@ -18,7 +17,6 @@ export default class App extends React.Component {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen name="Location" component={LocationScreen} />
-            <Stack.Screen name="Trending" component={Trending} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

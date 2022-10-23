@@ -12,7 +12,6 @@ import {
 import styles from '../../StylesScreen/LocationStyle';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
-import LocationCoord from '../../Fixtures/Geofences.json';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import {apiKey} from '../../Services/config'; // your google cloud api key
 
