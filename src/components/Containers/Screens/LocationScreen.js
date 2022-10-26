@@ -17,9 +17,13 @@ import {apiKey} from '../../Services/config'; // your google cloud api key
 
 const LocationScreen = () => {
   const placesRef = useRef();
-  const [locationStatus, setLocationStatus] = useState('');
   const {height, width} = Dimensions.get('window');
   const ASPECT_RATIO = width / height;
+
+  const [currentLongitude, setCurrentLongitude] = useState('...');
+  const [currentLatitude, setCurrentLatitude] = useState('...');
+  const [locationStatus, setLocationStatus] = useState('');
+  const [searchTimer, setSearchTimer] = useState(null);
 
   const [regionCoords, setRegion] = useState({
     lat: 37.4220936,
@@ -34,6 +38,7 @@ const LocationScreen = () => {
     const requestLocationPermission = async () => {
       if (Platform.OS === 'ios') {
         getCurrentPosition();
+        subscribeLocationLocation();
       } else {
         try {
           const granted = await PermissionsAndroid.request(
@@ -46,6 +51,7 @@ const LocationScreen = () => {
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             //To Check, If Permission is granted
             getCurrentPosition();
+            subscribeLocationLocation();
           } else {
             setLocationStatus('Permission Denied');
           }
@@ -64,30 +70,65 @@ const LocationScreen = () => {
       //Will give you the current location
       position => {
         setLocationStatus('You are Here');
-
-        const latitude = JSON.stringify(position.coords.latitude);
-        const longitude = JSON.stringify(position.coords.longitude);
+        const currLatitude = JSON.stringify(position.coords.latitude);
+        const currLongitude = JSON.stringify(position.coords.longitude);
         const formattedAddress = {
-          lng: longitude,
-          lat: latitude,
+          lng: currLongitude,
+          lat: currLatitude,
         };
 
         setRegion(formattedAddress);
         setMarkerCoords(formattedAddress);
         console.log('SARA :', regionCoords.lat, regionCoords.lng);
+
+        setCurrentLongitude(currentLongitude);
+        setCurrentLatitude(currentLatitude);
+      },
+      error => {
+        setLocationStatus(error.message);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 1000,
+      },
+    );
+  };
+
+  const subscribeLocationLocation = () => {
+    watchID = Geolocation.watchPosition(
+      position => {
+        //Will give you the location on location change
+
+        setLocationStatus('You are Here');
+        console.log(position);
+
+        //getting the Longitude from the location json
+        const currentLongitude = JSON.stringify(position.coords.longitude);
+
+        //getting the Latitude from the location json
+        const currentLatitude = JSON.stringify(position.coords.latitude);
+
+        //Setting Longitude state
+        setCurrentLongitude(currentLongitude);
+
+        //Setting Latitude state
+        setCurrentLatitude(currentLatitude);
       },
       error => {
         setLocationStatus(error.message);
       },
       {
         enableHighAccuracy: false,
-        timeout: 30000,
         maximumAge: 1000,
       },
     );
   };
 
-  const onPress = (data, details) => {
+  const handleSearchPlace = (data, details) => {
+    console.log('SARAA HEREE NOWW :', data);
+    console.log('SARAA HEREE NOWW :', details);
+
     setRegion(details.geometry.location);
     setMarkerCoords(details.geometry.location);
   };
@@ -112,7 +153,7 @@ const LocationScreen = () => {
         <GooglePlacesAutocomplete
           ref={placesRef}
           placeholder={'Enter Location Here'}
-          onPress={onPress}
+          onPress={handleSearchPlace}
           query={{
             key: apiKey,
             components: 'country:my',
@@ -125,7 +166,7 @@ const LocationScreen = () => {
           onFail={error => console.log(error)}
           onNotFound={() => console.log('no results')}
           listEmptyComponent={() => (
-            <View style={{flex: 1}}>
+            <View style={{flex: 1, padding: 10}}>
               <Text>No results were found</Text>
             </View>
           )}
