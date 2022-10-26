@@ -20,6 +20,7 @@ export default StyleSheet.create({
     top: 0,
     bottom: 0,
     position: 'absolute',
+    flex: 1,
   },
   SectionStyle: {
     flexDirection: 'row',
@@ -37,8 +38,9 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
-    marginTop: 10,
     zIndex: 1,
     position: 'absolute',
+    borderTopColor: 'lightgrey',
+    borderTopWidth: 1,
   },
 });
