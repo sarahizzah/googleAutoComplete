@@ -5,7 +5,7 @@ const create = () => {
   //Google API
   const getLocationFromGoogle = (lat, long) => {
     return axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${apiKey}`,
+      `    https://maps.googleapis.com/maps/api/place/autocomplete/json?input=malaysia&types=establishment&location=${lat}%2${long}&radius=500&key=${apiKey}`,
     );
   };
   return {
