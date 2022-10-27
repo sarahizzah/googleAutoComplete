@@ -1,21 +1,19 @@
 import {combineReducers} from 'redux';
-import {GET_PLACES} from './action';
+import {GET_PLACES} from './type';
 
-const initialState = {
-  placeName: '',
+const INITIAL_STATE = {
+  places: [],
 };
 
-function gettingNamePlace(state = initialState, action) {
+const userReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case GET_PLACES:
-      return {
-        ...state,
-        placeName: action.payload,
-      };
-    // other cases ...
+      return {...state, places: action.payload};
     default:
       return state;
   }
-}
+};
 
-export default gettingNamePlace;
+export default combineReducers({
+  allReducers: userReducer,
+});
