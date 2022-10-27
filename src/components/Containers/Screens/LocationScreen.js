@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {connect} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import {
+  PermissionsAndroid,
   StyleSheet,
   Text,
   View,
@@ -8,22 +9,26 @@ import {
   Dimensions,
   TextInput,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import styles from '../../StylesScreen/LocationStyle';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import {apiKey} from '../../Services/config'; // your google cloud api key
+import {getPlaces} from '../../Redux/action';
 
-const LocationScreen = () => {
+export const LocationScreen = () => {
   const placesRef = useRef();
   const {height, width} = Dimensions.get('window');
-  const ASPECT_RATIO = width / height;
-
   const [currentLongitude, setCurrentLongitude] = useState('...');
   const [currentLatitude, setCurrentLatitude] = useState('...');
   const [locationStatus, setLocationStatus] = useState('');
-  const [searchTimer, setSearchTimer] = useState(null);
+  const [searchTimer, setSearchTimer] = useState([]);
+
+  const {places} = useSelector(state => state.userReducer);
+
+  dispatch = useDispatch();
 
   const [regionCoords, setRegion] = useState({
     lat: 37.4220936,
@@ -35,6 +40,8 @@ const LocationScreen = () => {
   });
 
   useEffect(() => {
+    dispatch(getPlaces());
+
     const requestLocationPermission = async () => {
       if (Platform.OS === 'ios') {
         getCurrentPosition();
@@ -70,6 +77,7 @@ const LocationScreen = () => {
       //Will give you the current location
       position => {
         setLocationStatus('You are Here');
+        console.log('ALREADY HEREE ', position);
         const currLatitude = JSON.stringify(position.coords.latitude);
         const currLongitude = JSON.stringify(position.coords.longitude);
         const formattedAddress = {
@@ -79,7 +87,6 @@ const LocationScreen = () => {
 
         setRegion(formattedAddress);
         setMarkerCoords(formattedAddress);
-        console.log('SARA :', regionCoords.lat, regionCoords.lng);
 
         setCurrentLongitude(currentLongitude);
         setCurrentLatitude(currentLatitude);
@@ -101,7 +108,7 @@ const LocationScreen = () => {
         //Will give you the location on location change
 
         setLocationStatus('You are Here');
-        console.log(position);
+        console.log('YOU ARE HERE', position);
 
         //getting the Longitude from the location json
         const currentLongitude = JSON.stringify(position.coords.longitude);
@@ -126,8 +133,7 @@ const LocationScreen = () => {
   };
 
   const handleSearchPlace = (data, details) => {
-    console.log('SARAA HEREE NOWW :', data);
-    console.log('SARAA HEREE NOWW :', details);
+    console.log('SARAA HEREE NOWW :', details.geometry.location);
 
     setRegion(details.geometry.location);
     setMarkerCoords(details.geometry.location);
@@ -135,7 +141,13 @@ const LocationScreen = () => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <MapView
+      <FlatList
+        data={places}
+        renderItem={({item}) => <View>{item.state}</View>}
+        keyExtractor={(item, index) => index.toString()}
+      />
+
+      {/* <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         region={{
@@ -147,9 +159,9 @@ const LocationScreen = () => {
         <Marker
           coordinate={{latitude: markerCoords.lat, longitude: markerCoords.lng}}
         />
-      </MapView>
+      </MapView> */}
 
-      <View style={styles.searchPlace}>
+      {/* <View style={styles.searchPlace}>
         <GooglePlacesAutocomplete
           ref={placesRef}
           placeholder={'Enter Location Here'}
@@ -182,7 +194,7 @@ const LocationScreen = () => {
             ) : null
           }
         />
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 };
