@@ -143,7 +143,7 @@ export const LocationScreen = () => {
     <SafeAreaView style={{flex: 1}}>
       <FlatList
         data={places}
-        renderItem={({item}) => <View>{item.state}</View>}
+        renderItem={({item}) => <View>{item.predictions}</View>}
         keyExtractor={(item, index) => index.toString()}
       />
 
