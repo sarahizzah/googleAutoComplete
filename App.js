@@ -4,10 +4,10 @@ import {Provider} from 'react-redux';
 import {createStore} from 'redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import friendsReducer from './src/components/main';
 import LocationScreen from './src/components/Containers/Screens/LocationScreen';
-import placeStore from './src/components/Redux/store';
 
-const store = createStore(placeStore);
+const store = createStore(friendsReducer);
 const Stack = createStackNavigator();
 
 export default class App extends React.Component {
