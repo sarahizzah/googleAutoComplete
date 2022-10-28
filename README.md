@@ -1,12 +1,8 @@
 # sara googleAutoComplete project :)
-1. First location screen
-![firstScreen](https://user-images.githubusercontent.com/91882535/197373381-b6d25416-1a1a-44b3-b39c-be6859f78d48.png)
+![1](https://user-images.githubusercontent.com/91882535/198497199-862c960b-95ce-4e54-91a2-cd1067d98f66.png)
 
-2. When search the location
-![searchLocation](https://user-images.githubusercontent.com/91882535/197373386-a94d4260-109a-455b-884f-39ddb78ecce9.png)
+![2](https://user-images.githubusercontent.com/91882535/198497206-5d6f6796-3dba-4cd0-8b2a-ac57634d9470.png)
 
-3. After searching, mark the location
-![markPlace](https://user-images.githubusercontent.com/91882535/197373399-5ec73ba1-c9dc-4eef-93b3-480e4d0cfb71.png)
+![3](https://user-images.githubusercontent.com/91882535/198497216-9e9799b7-de06-400c-9605-e056e906ec9d.png)
 
-4. Clear search bar
-![clear](https://user-images.githubusercontent.com/91882535/197373404-a2303179-7e41-465b-bf22-4c9535409e0a.png)
+![4](https://user-images.githubusercontent.com/91882535/198497223-7bf3194d-e33f-437e-a7bd-ce2b15d9c8a7.png)
