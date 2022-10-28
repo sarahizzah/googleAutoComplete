@@ -34,12 +34,10 @@ export default StyleSheet.create({
   clearButton: {
     padding: 10,
   },
-  searchPlace: {
+  googleSearchPlace: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
-    zIndex: 1,
-    position: 'absolute',
     borderTopColor: 'lightgrey',
     borderTopWidth: 1,
   },

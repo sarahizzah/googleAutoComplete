@@ -16,7 +16,7 @@ import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import {apiKey} from '../../Services/config'; // your google cloud api key
-import {getPlaces} from '../../Redux/action';
+import {placeStore} from '../../Redux/store';
 
 export const LocationScreen = () => {
   const placesRef = useRef();
@@ -24,11 +24,8 @@ export const LocationScreen = () => {
   const [currentLongitude, setCurrentLongitude] = useState('...');
   const [currentLatitude, setCurrentLatitude] = useState('...');
   const [locationStatus, setLocationStatus] = useState('');
-  const [searchTimer, setSearchTimer] = useState([]);
-
-  const {places} = useSelector(state => state.userReducer);
-
-  dispatch = useDispatch();
+  const [placeName, setPlaceName] = useState('');
+  const [recentSeacrh, setRecentSeacrh] = useState(false);
 
   const [regionCoords, setRegion] = useState({
     lat: 37.4220936,
@@ -40,8 +37,6 @@ export const LocationScreen = () => {
   });
 
   useEffect(() => {
-    dispatch(getPlaces());
-
     const requestLocationPermission = async () => {
       if (Platform.OS === 'ios') {
         getCurrentPosition();
@@ -133,21 +128,20 @@ export const LocationScreen = () => {
   };
 
   const handleSearchPlace = (data, details) => {
-    console.log('SARAA HEREE NOWW :', details.geometry.location);
-
     setRegion(details.geometry.location);
     setMarkerCoords(details.geometry.location);
+    setPlaceName(data.description);
+    setRecentSeacrh(true);
+
+    const tempData = Object.entries(data).map(([key, val]) => ({
+      [key]: val,
+    }));
+    console.log('NEW tempData', tempData);
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <FlatList
-        data={places}
-        renderItem={({item}) => <View>{item.predictions}</View>}
-        keyExtractor={(item, index) => index.toString()}
-      />
-
-      {/* <MapView
+    <View style={{flex: 1, backgroundColor: '#f6f9fa'}}>
+      <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         region={{
@@ -159,9 +153,9 @@ export const LocationScreen = () => {
         <Marker
           coordinate={{latitude: markerCoords.lat, longitude: markerCoords.lng}}
         />
-      </MapView> */}
+      </MapView>
 
-      {/* <View style={styles.searchPlace}>
+      <View style={styles.googleSearchPlace}>
         <GooglePlacesAutocomplete
           ref={placesRef}
           placeholder={'Enter Location Here'}
@@ -194,8 +188,21 @@ export const LocationScreen = () => {
             ) : null
           }
         />
-      </View> */}
-    </SafeAreaView>
+      </View>
+      {recentSeacrh ? (
+        <View
+          style={{
+            marginTop: 5,
+            paddingTop: 12,
+            backgroundColor: '#F8F8F8',
+            paddingHorizontal: 16,
+            paddingBottom: 16,
+          }}>
+          <Text style={{paddingBottom: 8}}>RECENT SEARCHES</Text>
+          <Text>{placeName}</Text>
+        </View>
+      ) : null}
+    </View>
   );
 };
 
